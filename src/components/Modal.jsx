@@ -1,4 +1,4 @@
-import { Button, Input, Textarea } from "@material-tailwind/react";
+import { Button, Input, Textarea, Typography } from "@material-tailwind/react";
 
 export default function Modal({ setShow }) {
     return (
@@ -20,7 +20,13 @@ export default function Modal({ setShow }) {
                 </svg>
             </button>
 
-            <form className="w-4/5 md:w-1/2 flex flex-col gap-3.5 bg-gray-100 px-2.5 py-5 md:px-5 md:py-10 border rounded-lg shadow">
+            <form className="w-4/5 md:w-1/2 flex flex-col gap-3.5 bg-gray-100 px-2.5 py-5 md:px-4 md:py-5 border rounded-xl shadow">
+                <Typography
+                    variant="lead"
+                    className="text-center text-gray-600"
+                >
+                    Send Message
+                </Typography>
                 <Input label="Email" type="email" />
                 <Textarea label="Message" />
                 <Button color="deep-purple">Submit</Button>

@@ -1,9 +1,13 @@
 import Conversation from "./Conversation";
 
-export default function Sidebar({ setShow }) {
+export default function Sidebar({ toggle, setShow }) {
     return (
-        <aside className="w-full md:w-80 min-h-[calc(100vh-68px)] hidden md:block bg-white border-r-2">
-            <ul>
+        <aside
+            className={`${
+                toggle ? "w-full" : "w-0"
+            } block md:hidden bg-white absolute top-0 bottom-0 transition-all duration-300 border-r-2 overflow-hidden`}
+        >
+            <ul className={toggle ? "block" : "hidden"}>
                 <li className="flex justify-between items-center text-gray-600 px-3.5 py-2.5 border-b-2">
                     <span className="text-sm">Add Friend</span>
                     <button onClick={() => setShow(true)}>
