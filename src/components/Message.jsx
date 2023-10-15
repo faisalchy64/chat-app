@@ -7,7 +7,7 @@ export default function Message() {
                 </span>
             </div>
             <div>
-                <span className="bg-gray-200 px-2.5 py-2 rounded-lg shadow-sm">
+                <span className="text-gray-700 bg-gray-200 px-2.5 py-2 rounded-lg shadow-sm">
                     Hello Karim!
                 </span>
             </div>
