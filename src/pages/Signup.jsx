@@ -1,9 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useSignupMutation } from "../features/auth/authAPI";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Card, Input, Typography } from "@material-tailwind/react";
 import logo from "../assets/chat.png";
 
 export default function Signup() {
     const [show, setShow] = useState(false);
+    const [signup, { isSuccess, error }] = useSignupMutation();
+    const navigate = useNavigate();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm();
+
+    const onSubmit = async (data) => {
+        signup(data);
+        reset();
+    };
+
+    useEffect(() => {
+        if (isSuccess) {
+            navigate("/inbox");
+        }
+    }, [isSuccess, navigate]);
 
     return (
         <main className="w-4/5 min-h-screen flex flex-col justify-center items-center mx-auto">
@@ -13,18 +35,82 @@ export default function Signup() {
                     Chat App
                 </Typography>
             </div>
+
+            {error && error.data && error.data.email && (
+                <p className="w-full md:w-80 text-[10px] text-red-500 bg-red-100 px-2.5 py-1 mb-1.5 rounded-md">
+                    {error.data.email}
+                </p>
+            )}
+
+            {error && error.error && (
+                <p className="w-full md:w-80 text-[10px] text-red-500 bg-red-100 px-2.5 py-1 mb-1.5 rounded-md">
+                    There was an error
+                </p>
+            )}
+
             <Card color="white" className="md:w-80 px-3.5 py-2.5 border">
-                <Typography variant="h4" className="mb-1.5">
-                    Signup
-                </Typography>
-                <form className="flex flex-col gap-2.5 my-3.5">
-                    <Input label="Name" type="text" />
-                    <Input label="Email" type="email" />
+                <Typography variant="h4">Signup</Typography>
+                <form
+                    className="flex flex-col gap-2.5 my-3.5"
+                    onSubmit={handleSubmit(onSubmit)}
+                >
+                    <Input
+                        label="Name"
+                        type="text"
+                        {...register("name", {
+                            required: {
+                                value: true,
+                                message: "Name is required",
+                            },
+                            pattern: {
+                                value: /^[a-zA-Z\s]{3,}$/,
+                                message: "Please enter a valid name.",
+                            },
+                        })}
+                    />
+                    {errors && errors.name && (
+                        <p className="text-[10px] text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
+                            {errors.name.message}
+                        </p>
+                    )}
+
+                    <Input
+                        label="Email"
+                        type="email"
+                        {...register("email", {
+                            required: {
+                                value: true,
+                                message: "Email is required",
+                            },
+                            pattern: {
+                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                message: "Please enter a valid email.",
+                            },
+                        })}
+                    />
+                    {errors && errors.email && (
+                        <p className="text-[10px] text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
+                            {errors.email.message}
+                        </p>
+                    )}
+
                     <div className="relative">
                         <Input
                             label="Password"
                             type={show ? "text" : "password"}
+                            {...register("password", {
+                                required: {
+                                    value: true,
+                                    message: "Password is required",
+                                },
+                                pattern: {
+                                    value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                                    message:
+                                        "Minimum 8 characters neeeded (at least one letter, one digit and one special character).",
+                                },
+                            })}
                         />
+
                         {show ? (
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -64,9 +150,15 @@ export default function Signup() {
                             </svg>
                         )}
                     </div>
-                    <Typography variant="small" color="deep-purple">
+                    {errors && errors.password && (
+                        <p className="text-[10px] leading-4 text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
+                            {errors.password.message}
+                        </p>
+                    )}
+
+                    <Link to="/" className="w-fit text-sm text-deep-purple-500">
                         Already have an account?
-                    </Typography>
+                    </Link>
                     <Button color="deep-purple" type="submit">
                         Signup
                     </Button>
