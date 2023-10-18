@@ -1,7 +1,16 @@
+import { useDispatch } from "react-redux";
 import { Typography } from "@material-tailwind/react";
+import { userSignout } from "../features/auth/authSlice";
 import logo from "../assets/chat.png";
 
 export default function Navbar() {
+    const dispatch = useDispatch();
+
+    const signout = () => {
+        dispatch(userSignout());
+        localStorage.removeItem("auth");
+    };
+
     return (
         <nav className="bg-teal-500 py-3.5">
             <div className="w-4/5 flex justify-between items-center mx-auto">
@@ -11,7 +20,9 @@ export default function Navbar() {
                         Chat App
                     </Typography>
                 </div>
-                <button className="text-sm text-white">Signout</button>
+                <button className="text-sm text-white" onClick={signout}>
+                    Signout
+                </button>
             </div>
         </nav>
     );
