@@ -1,6 +1,12 @@
+import { useGetConversationsQuery } from "../features/conversation/conversationAPI";
+import useAuth from "../hooks/useAuth";
 import Conversation from "./Conversation";
+import ConversationLoader from "../uis/ConversationLoader";
 
 export default function Sidebar({ toggle, setShow }) {
+    const { _id } = useAuth();
+    const { isLoading, data, error } = useGetConversationsQuery({ _id });
+
     return (
         <aside
             className={`${
@@ -27,7 +33,36 @@ export default function Sidebar({ toggle, setShow }) {
                         </svg>
                     </button>
                 </li>
-                <Conversation />
+
+                {isLoading && (
+                    <>
+                        <ConversationLoader />
+                        <ConversationLoader />
+                        <ConversationLoader />
+                        <ConversationLoader />
+                        <ConversationLoader />
+                    </>
+                )}
+
+                {error && (
+                    <li className="text-xs text-red-500 bg-red-50 px-2.5 py-1.5">
+                        There was an error.
+                    </li>
+                )}
+
+                {data &&
+                    data.map((conversation) => (
+                        <Conversation
+                            key={conversation._id}
+                            conversation={conversation}
+                        />
+                    ))}
+
+                {data && data.length === 0 && (
+                    <li className="text-xs text-gray-700 bg-gray-100 px-2.5 py-1.5">
+                        No conversation is available
+                    </li>
+                )}
             </ul>
         </aside>
     );

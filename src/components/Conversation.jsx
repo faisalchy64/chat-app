@@ -1,19 +1,40 @@
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { Avatar, Typography } from "@material-tailwind/react";
+import moment from "moment";
+import { createAvatar } from "@dicebear/core";
+import { micah } from "@dicebear/collection";
+import useAuth from "../hooks/useAuth";
+import { getPerson } from "../utilities/common";
 
-export default function Conversation() {
+export default function Conversation({ conversation }) {
+    const { email } = useAuth();
+    const { _id, message, sender, receiver, updatedAt } = conversation;
+    const person = getPerson(email, [sender, receiver]);
+
+    const avatar = useMemo(() => {
+        return createAvatar(micah, {
+            size: 48,
+            seed: person.name,
+        }).toDataUriSync();
+    }, []);
+
     return (
-        <li className="flex gap-2.5 text-gray-600 px-3.5 py-2.5 border-b-2">
-            <Avatar
-                src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
-                alt="avatar"
-            />
-            <div className="grow flex justify-between">
-                <div>
-                    <Typography variant="h6">Shams Karim</Typography>
-                    <Typography variant="small">Hello Shams!</Typography>
+        <Link to={`/inbox/${_id}`}>
+            <li className="flex gap-2.5 text-gray-600 px-3.5 py-2.5 border-b-2">
+                <Avatar src={avatar} alt="avatar" className="bg-gray-200" />
+                <div className="grow flex justify-between">
+                    <div>
+                        <Typography variant="h6" className="capitalize">
+                            {person.name}
+                        </Typography>
+                        <Typography variant="small">{message}</Typography>
+                    </div>
+                    <span className="text-xs">
+                        {moment(updatedAt).fromNow()}
+                    </span>
                 </div>
-                <span className="text-xs">1 hour ago</span>
-            </div>
-        </li>
+            </li>
+        </Link>
     );
 }
