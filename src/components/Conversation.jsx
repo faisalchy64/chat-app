@@ -17,7 +17,7 @@ export default function Conversation({ conversation }) {
             size: 48,
             seed: person.name,
         }).toDataUriSync();
-    }, []);
+    }, [person.name]);
 
     return (
         <Link to={`/inbox/${_id}`}>
