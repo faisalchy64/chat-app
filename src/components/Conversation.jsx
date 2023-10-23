@@ -28,7 +28,10 @@ export default function Conversation({ conversation }) {
                         <Typography variant="h6" className="capitalize">
                             {person.name}
                         </Typography>
-                        <Typography variant="small">{message}</Typography>
+                        <Typography variant="small">
+                            {message.slice(0, 20)}
+                            {message.length > 20 && "..."}
+                        </Typography>
                     </div>
                     <span className="text-xs">
                         {moment(updatedAt).fromNow()}
