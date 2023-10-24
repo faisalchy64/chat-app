@@ -12,7 +12,10 @@ export default function Sidebar({ setShow }) {
             <ul>
                 <li className="flex justify-between items-center text-gray-600 px-3.5 py-2.5 border-b-2">
                     <span className="text-sm">Add Friend</span>
-                    <button onClick={() => setShow(true)}>
+                    <button
+                        title="Create new conversation"
+                        onClick={() => setShow(true)}
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -42,7 +45,7 @@ export default function Sidebar({ setShow }) {
 
                 {error && (
                     <li className="text-xs text-red-500 bg-red-50 px-2.5 py-1.5">
-                        There was an error.
+                        Fetch conversation failed.
                     </li>
                 )}
 

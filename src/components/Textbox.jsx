@@ -1,13 +1,33 @@
-export default function Textbox() {
+import { usePostConversationMutation } from "../features/conversation/conversationAPI";
+
+export default function Textbox({ user, person }) {
+    const [addMessage, { isLoading }] = usePostConversationMutation();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (e.target.message.value) {
+            addMessage({
+                message: e.target.message.value,
+                sender: user,
+                receiver: person,
+            });
+        }
+
+        e.target.reset();
+    };
+
     return (
-        <form className="flex items-center gap-1.5 px-3.5 py-5">
+        <form
+            className="flex items-center gap-1.5 text-gray-700 px-3.5 py-5"
+            onSubmit={handleSubmit}
+        >
             <textarea
                 name="message"
                 rows="1"
                 placeholder="Write message..."
                 className="w-full px-2.5 py-2 border border-gray-500 outline-none resize-none rounded-xl"
             ></textarea>
-            <button>
+            <button type="submit" disabled={isLoading}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

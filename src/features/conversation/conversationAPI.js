@@ -5,8 +5,16 @@ const conversationAPI = apiSlice.injectEndpoints({
         getConversations: builder.query({
             query: ({ _id, page }) => `/conversations?id=${_id}&page=${page}`,
         }),
+        postConversation: builder.mutation({
+            query: (conversation) => ({
+                url: "/conversations",
+                method: "POST",
+                body: conversation,
+            }),
+        }),
     }),
 });
 
 export default conversationAPI;
-export const { useGetConversationsQuery } = conversationAPI;
+export const { useGetConversationsQuery, usePostConversationMutation } =
+    conversationAPI;

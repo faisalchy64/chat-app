@@ -29,8 +29,10 @@ export default function Conversation({ conversation }) {
                             {person.name}
                         </Typography>
                         <Typography variant="small">
-                            {message.slice(0, 20)}
-                            {message.length > 20 && "..."}
+                            {}
+                            {message.length > 20
+                                ? `${message.slice(0, 20)}...`
+                                : message}
                         </Typography>
                     </div>
                     <span className="text-xs">

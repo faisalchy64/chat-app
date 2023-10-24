@@ -15,8 +15,8 @@ export default function Messages() {
     const [partner, setPartner] = useState([]);
     const { id } = useParams();
     const { isLoading, data, error } = useGetMessagesQuery(id);
-    const { email } = useAuth();
-    const person = getPerson(email, partner);
+    const user = useAuth();
+    const person = getPerson(user.email, partner);
 
     const avatar = useMemo(() => {
         return createAvatar(micah, {
@@ -38,7 +38,7 @@ export default function Messages() {
                 <div className="flex items-center gap-2.5 text-gray-600 px-3.5 py-2.5 border-b-2">
                     <Avatar src={avatar} alt="avatar" />
                     <Typography variant="h6" className="capitalize">
-                        {person?.name}
+                        {person.name}
                     </Typography>
                 </div>
             ) : (
@@ -61,11 +61,11 @@ export default function Messages() {
 
                 {error && (
                     <p className="w-fit text-xs text-red-500 bg-red-100 px-2.5 py-1.5 mx-auto rounded">
-                        There was an error.
+                        Fetch message failed.
                     </p>
                 )}
             </div>
-            <Textbox />
+            <Textbox user={user} person={person} />
         </div>
     );
 }
