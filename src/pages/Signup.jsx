@@ -37,13 +37,13 @@ export default function Signup() {
             </div>
 
             {error && error.data && error.data.email && (
-                <p className="w-full md:w-80 text-[10px] text-red-500 bg-red-100 px-2.5 py-1 mb-1.5 rounded-md">
+                <p className="text-xs text-red-500 mb-1.5">
                     {error.data.email}
                 </p>
             )}
 
             {error && error.error && (
-                <p className="w-full md:w-80 text-[10px] text-red-500 bg-red-100 px-2.5 py-1 mb-1.5 rounded-md">
+                <p className="text-xs text-red-500 mb-1.5">
                     There was an error
                 </p>
             )}
@@ -69,7 +69,7 @@ export default function Signup() {
                         })}
                     />
                     {errors && errors.name && (
-                        <p className="text-[10px] text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
+                        <p className="text-xs text-red-500">
                             {errors.name.message}
                         </p>
                     )}
@@ -89,7 +89,7 @@ export default function Signup() {
                         })}
                     />
                     {errors && errors.email && (
-                        <p className="text-[10px] text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
+                        <p className="text-xs text-red-500">
                             {errors.email.message}
                         </p>
                     )}
@@ -151,7 +151,7 @@ export default function Signup() {
                         )}
                     </div>
                     {errors && errors.password && (
-                        <p className="text-[10px] leading-4 text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
+                        <p className="text-xs text-red-500">
                             {errors.password.message}
                         </p>
                     )}
