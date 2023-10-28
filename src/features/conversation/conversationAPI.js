@@ -1,3 +1,4 @@
+import socket from "socket.io-client";
 import apiSlice from "../api/apiSlice";
 import { getPerson } from "../../utilities/common";
 
@@ -5,6 +6,44 @@ const conversationAPI = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getConversations: builder.query({
             query: ({ _id, page }) => `/conversations?id=${_id}&page=${page}`,
+            async onCacheEntryAdded(
+                arg,
+                { cacheDataLoaded, updateCachedData }
+            ) {
+                const io = socket("http://localhost:5000", {
+                    reconnection: true,
+                    reconnectionDelay: 1000,
+                    reconnectionAttempts: 10,
+                    transports: ["websocket"],
+                    agent: false,
+                    upgrade: false,
+                    rejectUnauthorized: false,
+                });
+
+                try {
+                    await cacheDataLoaded;
+
+                    io.on("conversation", (data) => {
+                        updateCachedData((draft) => {
+                            const draftConversation = draft.find(
+                                (conversation) =>
+                                    conversation._id === data.conversation._id
+                            );
+
+                            if (draftConversation) {
+                                draftConversation.message =
+                                    data.conversation.message;
+                                draftConversation.updatedAt =
+                                    data.conversation.updatedAt;
+                            } else {
+                                draft.push(data.conversation);
+                            }
+                        });
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+            },
         }),
         postConversation: builder.mutation({
             query: (conversation) => ({
@@ -64,19 +103,6 @@ const conversationAPI = apiSlice.injectEndpoints({
                                     } else {
                                         draft.push(data);
                                     }
-                                }
-                            )
-                        );
-
-                        dispatch(
-                            apiSlice.util.updateQueryData(
-                                "getMessages",
-                                data._id,
-                                (draft) => {
-                                    draft.push({
-                                        ...data,
-                                        conversationId: data._id,
-                                    });
                                 }
                             )
                         );

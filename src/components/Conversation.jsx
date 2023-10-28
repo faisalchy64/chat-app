@@ -29,7 +29,6 @@ export default function Conversation({ conversation }) {
                             {person.name}
                         </Typography>
                         <Typography variant="small">
-                            {}
                             {message.length > 20
                                 ? `${message.slice(0, 20)}...`
                                 : message}

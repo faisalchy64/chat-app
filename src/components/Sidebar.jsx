@@ -50,12 +50,19 @@ export default function Sidebar({ setShow }) {
                 )}
 
                 {data &&
-                    data.map((conversation) => (
-                        <Conversation
-                            key={conversation._id}
-                            conversation={conversation}
-                        />
-                    ))}
+                    data
+                        .slice()
+                        .sort(
+                            (a, b) =>
+                                new Date(b.updatedAt).getTime() -
+                                new Date(a.updatedAt).getTime()
+                        )
+                        .map((conversation) => (
+                            <Conversation
+                                key={conversation._id}
+                                conversation={conversation}
+                            />
+                        ))}
 
                 {data && data.length === 0 && (
                     <li className="text-xs text-gray-700 bg-gray-100 px-2.5 py-1.5">
