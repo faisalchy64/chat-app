@@ -30,7 +30,7 @@ export default function Conversation({ conversation }) {
                         </Typography>
                         <Typography variant="small">
                             {message.length > 20
-                                ? `${message.slice(0, 20)}...`
+                                ? `${message.slice(0, 15)}...`
                                 : message}
                         </Typography>
                     </div>
