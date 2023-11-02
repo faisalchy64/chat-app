@@ -5,10 +5,14 @@ import { getPerson } from "../../utilities/common";
 const conversationAPI = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getConversations: builder.query({
-            query: ({ _id, page }) => `/conversations?id=${_id}&page=${page}`,
+            query: ({ _id }) => `/conversations?id=${_id}`,
+            transformResponse(res, meta) {
+                const total = meta.response.headers.get("Total");
+                return { conversations: res, total };
+            },
             async onCacheEntryAdded(
                 arg,
-                { cacheDataLoaded, updateCachedData }
+                { cacheDataLoaded, updateCachedData, cacheEntryRemoved }
             ) {
                 const io = socket("http://localhost:5000", {
                     reconnection: true,
@@ -25,7 +29,7 @@ const conversationAPI = apiSlice.injectEndpoints({
 
                     io.on("conversation", (data) => {
                         updateCachedData((draft) => {
-                            const draftConversation = draft.find(
+                            const draftConversation = draft.conversations.find(
                                 (conversation) =>
                                     conversation._id === data.conversation._id
                             );
@@ -36,10 +40,44 @@ const conversationAPI = apiSlice.injectEndpoints({
                                 draftConversation.updatedAt =
                                     data.conversation.updatedAt;
                             } else {
-                                draft.push(data.conversation);
+                                draft.conversations.push(data.conversation);
                             }
                         });
                     });
+
+                    await cacheEntryRemoved;
+                    io.close();
+                } catch (err) {
+                    console.log(err);
+                }
+            },
+        }),
+        getMoreConversations: builder.query({
+            query: ({ _id, page }) => `/conversations?id=${_id}&page=${page}`,
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                try {
+                    const { data } = await queryFulfilled;
+
+                    // Pessimistic update cache data
+                    if (data) {
+                        dispatch(
+                            apiSlice.util.updateQueryData(
+                                "getConversations",
+                                { _id: arg._id },
+                                (draft) => {
+                                    // draft.conversations.concat(data);
+                                    return {
+                                        ...draft,
+                                        conversations: [
+                                            ...draft.conversations,
+                                            ...data,
+                                        ],
+                                    };
+                                }
+                            )
+                        );
+                    }
+                    // Pessimistic update cache data
                 } catch (err) {
                     console.log(err);
                 }
@@ -64,7 +102,7 @@ const conversationAPI = apiSlice.injectEndpoints({
                                 arg.receiver,
                             ]);
 
-                            const draftConversation = draft.find(
+                            const draftConversation = draft.conversations.find(
                                 (conversation) =>
                                     conversation.sender._id === person._id ||
                                     conversation.receiver._id === person._id
@@ -90,10 +128,11 @@ const conversationAPI = apiSlice.injectEndpoints({
                                 "getConversations",
                                 { _id: data.sender._id },
                                 (draft) => {
-                                    const draftConversation = draft.find(
-                                        (conversation) =>
-                                            conversation._id === data._id
-                                    );
+                                    const draftConversation =
+                                        draft.conversations.find(
+                                            (conversation) =>
+                                                conversation._id === data._id
+                                        );
 
                                     if (draftConversation) {
                                         draftConversation.message =
@@ -117,5 +156,8 @@ const conversationAPI = apiSlice.injectEndpoints({
 });
 
 export default conversationAPI;
-export const { useGetConversationsQuery, usePostConversationMutation } =
-    conversationAPI;
+export const {
+    useGetConversationsQuery,
+    useGetMoreConversationsQuery,
+    usePostConversationMutation,
+} = conversationAPI;

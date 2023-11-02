@@ -7,8 +7,8 @@ const apiSlice = createApi({
         prepareHeaders: async (headers, { getState }) => {
             const auth = getState().auth;
 
-            if (auth) {
-                headers.set("Authorization", `Bearer ${auth.accessToken}`);
+            if (auth && auth.user) {
+                headers.set("Authorization", `Bearer ${auth.user.accessToken}`);
             }
 
             return headers;

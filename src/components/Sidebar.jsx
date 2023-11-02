@@ -1,11 +1,39 @@
-import { useGetConversationsQuery } from "../features/conversation/conversationAPI";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import InfiniteScroll from "react-infinite-scroll-component";
+import conversationAPI, {
+    useGetConversationsQuery,
+} from "../features/conversation/conversationAPI";
 import useAuth from "../hooks/useAuth";
 import Conversation from "./Conversation";
 import ConversationLoader from "../uis/ConversationLoader";
 
 export default function Sidebar({ setShow }) {
+    const [page, setPage] = useState(1);
+    const [more, setMore] = useState(false);
+    const dispatch = useDispatch();
     const { _id } = useAuth();
     const { isLoading, data, error } = useGetConversationsQuery({ _id });
+    const { conversations, total } = data || {};
+
+    const getMore = () => {
+        setPage((prevPage) => prevPage + 1);
+    };
+
+    useEffect(() => {
+        if (total && parseInt(total) > 0) {
+            setMore(Math.ceil(parseInt(total) / 10) > page);
+        }
+
+        if (page > 1) {
+            dispatch(
+                conversationAPI.endpoints.getMoreConversations.initiate({
+                    _id,
+                    page,
+                })
+            );
+        }
+    }, [total, page, _id, dispatch]);
 
     return (
         <aside className="w-full md:w-80 min-h-[calc(100vh-68px)] hidden md:block bg-white border-r-2">
@@ -49,22 +77,29 @@ export default function Sidebar({ setShow }) {
                     </li>
                 )}
 
-                {data &&
-                    data
-                        .slice()
-                        .sort(
-                            (a, b) =>
-                                new Date(b.updatedAt).getTime() -
-                                new Date(a.updatedAt).getTime()
-                        )
-                        .map((conversation) => (
-                            <Conversation
-                                key={conversation._id}
-                                conversation={conversation}
-                            />
-                        ))}
+                <InfiniteScroll
+                    dataLength={conversations ? conversations.length : 0}
+                    hasMore={more}
+                    next={getMore}
+                    height="calc(100vh - 113.6px)"
+                >
+                    {conversations &&
+                        conversations
+                            .slice()
+                            .sort(
+                                (a, b) =>
+                                    new Date(b.updatedAt).getTime() -
+                                    new Date(a.updatedAt).getTime()
+                            )
+                            .map((conversation) => (
+                                <Conversation
+                                    key={conversation._id}
+                                    conversation={conversation}
+                                />
+                            ))}
+                </InfiniteScroll>
 
-                {data && data.length === 0 && (
+                {conversations && conversations.length === 0 && (
                     <li className="text-xs text-gray-700 bg-gray-100 px-2.5 py-1.5">
                         No conversation is available
                     </li>

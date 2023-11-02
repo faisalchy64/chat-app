@@ -7,7 +7,7 @@ const messageAPI = apiSlice.injectEndpoints({
             query: (conversationId) => `/messages?id=${conversationId}`,
             async onCacheEntryAdded(
                 arg,
-                { cacheDataLoaded, updateCachedData }
+                { cacheDataLoaded, updateCachedData, cacheEntryRemoved }
             ) {
                 const io = socket("http://localhost:5000", {
                     reconnection: true,
@@ -27,6 +27,9 @@ const messageAPI = apiSlice.injectEndpoints({
                             draft.push(data.message);
                         });
                     });
+
+                    await cacheEntryRemoved;
+                    io.close();
                 } catch (err) {
                     console.log(err);
                 }
