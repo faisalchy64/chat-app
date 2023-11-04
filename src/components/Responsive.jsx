@@ -39,7 +39,7 @@ export default function Sidebar({ toggle, setShow }) {
         <aside
             className={`${
                 toggle ? "w-full" : "w-0"
-            } block md:hidden bg-white absolute top-0 bottom-0 transition-all duration-300 border-r-2 overflow-hidden`}
+            } block md:hidden bg-white absolute top-0 bottom-0 transition-all duration-300 border-r-2 overflow-hidden z-[1000]`}
         >
             <ul className={toggle ? "block" : "hidden"}>
                 <li className="flex justify-between items-center text-gray-600 px-3.5 py-2.5 border-b-2">
