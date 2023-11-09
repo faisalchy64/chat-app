@@ -8,7 +8,7 @@ import useAuth from "../hooks/useAuth";
 import Conversation from "./Conversation";
 import ConversationLoader from "../uis/ConversationLoader";
 
-export default function Sidebar({ toggle, setShow }) {
+export default function Sidebar({ toggle, setToggle, setShow }) {
     const [page, setPage] = useState(1);
     const [more, setMore] = useState(false);
     const dispatch = useDispatch();
@@ -78,27 +78,30 @@ export default function Sidebar({ toggle, setShow }) {
                     </li>
                 )}
 
-                <InfiniteScroll
-                    dataLength={conversations ? conversations.length : 0}
-                    hasMore={more}
-                    next={getMore}
-                    height="calc(100vh - 113.6px)"
-                >
-                    {conversations &&
-                        conversations
-                            .slice()
-                            .sort(
-                                (a, b) =>
-                                    new Date(b.updatedAt).getTime() -
-                                    new Date(a.updatedAt).getTime()
-                            )
-                            .map((conversation) => (
-                                <Conversation
-                                    key={conversation._id}
-                                    conversation={conversation}
-                                />
-                            ))}
-                </InfiniteScroll>
+                {conversations && conversations.length > 0 && (
+                    <InfiniteScroll
+                        dataLength={conversations ? conversations.length : 0}
+                        hasMore={more}
+                        next={getMore}
+                        height="calc(100vh - 113.6px)"
+                    >
+                        {conversations &&
+                            conversations
+                                .slice()
+                                .sort(
+                                    (a, b) =>
+                                        new Date(b.updatedAt).getTime() -
+                                        new Date(a.updatedAt).getTime()
+                                )
+                                .map((conversation) => (
+                                    <Conversation
+                                        key={conversation._id}
+                                        conversation={conversation}
+                                        setToggle={setToggle}
+                                    />
+                                ))}
+                    </InfiniteScroll>
+                )}
 
                 {conversations && conversations.length === 0 && (
                     <li className="text-xs text-gray-700 bg-gray-100 px-2.5 py-1.5">

@@ -70,7 +70,7 @@ export default function Messages() {
                 <PersonLoader />
             )}
 
-            <div className="h-[calc(100vh-221.2px)] flex flex-col justify-end px-3.5 py-5 border-b-2">
+            <div className="h-[calc(100vh-221.2px)] flex flex-col justify-end md:px-3.5 py-5 border-b-2">
                 {isLoading && <MessageLoader />}
 
                 {messages && (

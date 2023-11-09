@@ -77,7 +77,7 @@ export default function Sidebar({ setShow }) {
                     </li>
                 )}
 
-                {conversations && (
+                {conversations && conversations.length > 0 && (
                     <InfiniteScroll
                         dataLength={conversations ? conversations.length : 0}
                         hasMore={more}

@@ -34,7 +34,7 @@ export default function Modal({ setShow }) {
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            if (verifyEmail(input) && input !== user.email) {
+            if (input && input !== user.email && verifyEmail(input)) {
                 setInputRequest(false);
             }
         }, 2000);
@@ -46,7 +46,7 @@ export default function Modal({ setShow }) {
     }, [input, user]);
 
     return (
-        <div className="flex justify-center items-center bg-gray-500 bg-clip-padding backdrop-blur bg-opacity-25 absolute inset-0 m-auto">
+        <div className="flex justify-center items-center bg-gray-500 bg-clip-padding backdrop-blur bg-opacity-25 absolute inset-0 m-auto z-[1500]">
             <button className="text-white" onClick={() => setShow(false)}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -76,13 +76,13 @@ export default function Modal({ setShow }) {
                 </Typography>
 
                 {error && error.data && (
-                    <p className="w-fit text-[10px] text-red-500 bg-red-100 px-1.5 py-0.5 mx-auto rounded">
+                    <p className="w-fit text-xs text-red-500 mx-auto">
                         {error.data.message}
                     </p>
                 )}
 
                 {input === user.email && (
-                    <p className="w-fit text-[10px] text-red-500 bg-red-100 px-1.5 py-0.5 mx-auto rounded">
+                    <p className="w-fit text-xs text-red-500 mx-auto">
                         You can not send message to yourself.
                     </p>
                 )}
@@ -99,29 +99,31 @@ export default function Modal({ setShow }) {
                             value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                             message: "Please enter a valid email.",
                         },
+                        onChange: (e) => setInput(e.target.value),
                     })}
-                    onChange={(e) => setInput(e.target.value)}
                 />
                 {errors && errors.email && (
-                    <p className="text-[10px] text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
+                    <p className="text-xs text-red-500">
                         {errors.email.message}
                     </p>
                 )}
 
-                <Textarea
-                    label="Message"
-                    {...register("message", {
-                        required: {
-                            value: true,
-                            message: "Message is required",
-                        },
-                    })}
-                />
-                {errors && errors.message && (
-                    <p className="text-[10px] text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
-                        {errors.message.message}
-                    </p>
-                )}
+                <div>
+                    <Textarea
+                        label="Message"
+                        {...register("message", {
+                            required: {
+                                value: true,
+                                message: "Message is required",
+                            },
+                        })}
+                    />
+                    {errors && errors.message && (
+                        <p className="text-xs text-red-500 mt-[4.6px]">
+                            {errors.message.message}
+                        </p>
+                    )}
+                </div>
 
                 <Button
                     color="deep-purple"

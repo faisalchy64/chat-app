@@ -29,7 +29,9 @@ const messageAPI = apiSlice.injectEndpoints({
 
                     io.on("conversation", (data) => {
                         updateCachedData((draft) => {
-                            draft.messages.unshift(data.message);
+                            if (data.message.conversationId === arg) {
+                                draft.messages.unshift(data.message);
+                            }
                         });
                     });
 

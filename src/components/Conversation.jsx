@@ -7,10 +7,16 @@ import { micah } from "@dicebear/collection";
 import useAuth from "../hooks/useAuth";
 import { getPerson } from "../utilities/common";
 
-export default function Conversation({ conversation }) {
+export default function Conversation({ conversation, setToggle }) {
     const { email } = useAuth();
     const { _id, message, sender, receiver, updatedAt } = conversation;
     const person = getPerson(email, [sender, receiver]);
+
+    const handleClick = () => {
+        if (setToggle) {
+            setToggle(false);
+        }
+    };
 
     const avatar = useMemo(() => {
         return createAvatar(micah, {
@@ -21,7 +27,10 @@ export default function Conversation({ conversation }) {
 
     return (
         <Link to={`/inbox/${_id}`}>
-            <li className="flex gap-2.5 text-gray-600 px-3.5 py-2.5 border-b-2">
+            <li
+                className="flex gap-2.5 text-gray-600 px-3.5 py-2.5 border-b-2"
+                onClick={handleClick}
+            >
                 <Avatar src={avatar} alt="avatar" className="bg-gray-200" />
                 <div className="grow flex justify-between">
                     <div>

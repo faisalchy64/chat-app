@@ -65,7 +65,6 @@ const conversationAPI = apiSlice.injectEndpoints({
                                 "getConversations",
                                 { _id: arg._id },
                                 (draft) => {
-                                    // draft.conversations.concat(data);
                                     return {
                                         ...draft,
                                         conversations: [

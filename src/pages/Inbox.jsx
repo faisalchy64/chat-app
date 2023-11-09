@@ -14,7 +14,11 @@ export default function Inbox() {
             <Navbar toggle={toggle} setToggle={setToggle} />
             <main className="min-h-[calc(100vh-68px)] flex relative">
                 <Sidebar setShow={setShow} />
-                <Responsive toggle={toggle} setShow={setShow} />
+                <Responsive
+                    toggle={toggle}
+                    setToggle={setToggle}
+                    setShow={setShow}
+                />
                 <Outlet />
             </main>
             {show && <Modal setShow={setShow} />}
