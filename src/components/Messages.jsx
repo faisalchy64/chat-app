@@ -61,7 +61,7 @@ export default function Messages() {
         <div className="grow">
             {person ? (
                 <div className="flex items-center gap-2.5 text-gray-600 px-3.5 py-2.5 border-b-2">
-                    <Avatar src={avatar} alt="avatar" />
+                    <Avatar src={avatar} alt="avatar" className="bg-gray-200" />
                     <Typography variant="h6" className="capitalize">
                         {person.name}
                     </Typography>

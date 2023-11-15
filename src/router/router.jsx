@@ -4,6 +4,7 @@ import AuthRoute from "../components/AuthRoute";
 import Signin from "../pages/Signin";
 import Signup from "../pages/Signup";
 import Inbox from "../pages/Inbox";
+import NotFound from "../pages/NotFound";
 import Empty from "../components/Empty";
 import Messages from "../components/Messages";
 
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
                 ],
             },
         ],
+    },
+    {
+        path: "*",
+        element: <NotFound />,
     },
 ]);
 
